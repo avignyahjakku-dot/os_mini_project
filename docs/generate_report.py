@@ -81,10 +81,10 @@ def create_report():
     table_meta.alignment = WD_TABLE_ALIGNMENT.CENTER
     meta_data = [
         ("Course Name:", "Operating Systems (CSE-301)"),
-        ("Project Topic Number:", "Topic 11: Banker's Algorithm for Deadlock Avoidance"),
-        ("Student Name(s):", "Avignya Hjakku (and Team)"),
-        ("PRN / Roll Number(s):", "[Student PRN / Roll Number]"),
-        ("Faculty Guide:", "[Faculty Guide Name, Designation]"),
+        ("Project Topic:", "Topic 11: Banker's Algorithm for Deadlock Avoidance"),
+        ("Student Name(s) & PRN:", "1. Avignya Reddy Jakku (PRN: 25070721024)\n2. Aapti Reddy Erragunta (PRN: 25070721018)\n3. Ahila Meghana (PRN: 25070721002)"),
+        ("Faculty Guide:", "Prof. Bibhu Prasad Sahu\nFaculty of Operating Systems, Dept. of CSE"),
+        ("Head of Department:", "Dr. Suryanarayana\nHead of Department, Dept. of CSE"),
     ]
     for idx, (label, val) in enumerate(meta_data):
         row = table_meta.rows[idx]
@@ -107,7 +107,8 @@ def create_report():
 
     p_cert_body = doc.add_paragraph(
         "This is to certify that the mini project entitled \"Banker's Algorithm for Deadlock Avoidance and "
-        "Resource-Allocation Verification\" is a bona fide record of work carried out by Avignya Hjakku "
+        "Resource-Allocation Verification\" is a bona fide record of work carried out by Avignya Reddy Jakku "
+        "(PRN: 25070721024), Aapti Reddy Erragunta (PRN: 25070721018), and Ahila Meghana (PRN: 25070721002) "
         "in partial fulfillment of the requirements for the award of the Degree of Bachelor of Technology "
         "in Computer Science and Engineering during the academic session 2024–2025."
     )
@@ -116,8 +117,8 @@ def create_report():
     # Signature blocks
     sig_table = doc.add_table(rows=2, cols=2)
     sig_table.alignment = WD_TABLE_ALIGNMENT.CENTER
-    sig_table.rows[0].cells[0].paragraphs[0].add_run("_____________________\nFaculty Guide\nDepartment of CSE").bold = True
-    sig_table.rows[0].cells[1].paragraphs[0].add_run("_____________________\nHead of Department\nDepartment of CSE").bold = True
+    sig_table.rows[0].cells[0].paragraphs[0].add_run("_____________________\nProf. Bibhu Prasad Sahu\nFaculty Guide (Operating Systems)\nDepartment of CSE").bold = True
+    sig_table.rows[0].cells[1].paragraphs[0].add_run("_____________________\nDr. Suryanarayana\nHead of Department\nDepartment of CSE").bold = True
     sig_table.rows[0].cells[0].width = Inches(3.2)
     sig_table.rows[0].cells[1].width = Inches(3.2)
 
@@ -131,8 +132,8 @@ def create_report():
 
     doc.add_paragraph(
         "We hereby declare that the project work presented in this mini-project report is an authentic record "
-        "of our original work completed under the guidance of our faculty guide. All citations, literature sources, "
-        "and algorithmic formulations have been properly referenced in accordance with standard academic integrity guidelines."
+        "of our original work completed under the guidance of our faculty guide Prof. Bibhu Prasad Sahu. All citations, "
+        "literature sources, and algorithmic formulations have been properly referenced in accordance with standard academic integrity guidelines."
     )
 
     doc.add_page_break()
@@ -147,9 +148,9 @@ def create_report():
     r_ack.font.size = Pt(14)
 
     doc.add_paragraph(
-        "We express our profound gratitude to our faculty guide and the Department of Computer Science & Engineering "
-        "for providing essential facilities, valuable mentorship, and academic encouragement throughout the course of "
-        "this Operating Systems mini project. We also thank our peers for their collaborative technical discussions."
+        "We express our profound gratitude to our faculty guide Prof. Bibhu Prasad Sahu and our Head of Department "
+        "Dr. Suryanarayana, Department of Computer Science & Engineering, for providing essential academic guidance, "
+        "facilities, and encouragement throughout this Operating Systems mini project."
     )
 
     doc.add_paragraph().paragraph_format.space_after = Pt(18)

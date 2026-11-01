@@ -9,8 +9,12 @@
 
 > **Operating Systems Mini Project — Topic 11**  
 > **Course:** Operating Systems (CSE-301)  
-> **Student:** Avignya Hjakku (and Team)  
-> **Faculty Guide:** [Faculty Guide Name]  
+> **Team Members:**  
+> - Avignya Reddy Jakku (`25070721024`)  
+> - Aapti Reddy Erragunta (`25070721018`)  
+> - Ahila Meghana (`25070721002`)  
+> **Faculty Guide:** Prof. Bibhu Prasad Sahu (Faculty of Operating Systems)  
+> **Head of Department:** Dr. Suryanarayana  
 > **Repository:** [https://github.com/avignyahjakku-dot/os_mini_project.git](https://github.com/avignyahjakku-dot/os_mini_project.git)
 
 ---
@@ -289,7 +293,12 @@ Theoretical bound: $O(m \cdot n^2)$ operations.
 ---
 
 ## 👥 Authors & Academic Attribution
-- **Author:** Avignya Hjakku
+- **Team Members:**
+  - Avignya Reddy Jakku (`25070721024`)
+  - Aapti Reddy Erragunta (`25070721018`)
+  - Ahila Meghana (`25070721002`)
+- **Faculty Guide:** Prof. Bibhu Prasad Sahu (Faculty of Operating Systems)
+- **Head of Department:** Dr. Suryanarayana (Department of CSE)
 - **Course:** Operating Systems (CSE-301)
 - **Topic:** Topic 11 — Banker's Algorithm for Deadlock Avoidance
 - **License:** [MIT License](LICENSE)

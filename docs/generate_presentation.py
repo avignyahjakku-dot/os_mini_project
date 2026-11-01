@@ -85,9 +85,16 @@ def build_presentation():
     p2.space_after = Pt(30)
 
     p3 = tf1.add_paragraph()
-    p3.text = "Student Name: Avignya Hjakku (and Team)  |  Guide: Faculty Guide  |  Dept. of Computer Science & Engineering"
+    p3.text = "Team Members: Avignya Reddy Jakku (25070721024) | Aapti Reddy Erragunta (25070721018) | Ahila Meghana (25070721002)"
     p3.font.size = Pt(13)
+    p3.font.bold = True
     p3.font.color.rgb = TEXT_DARK
+    p3.space_after = Pt(6)
+
+    p4 = tf1.add_paragraph()
+    p4.text = "Faculty Guide: Prof. Bibhu Prasad Sahu (Faculty of OS)  |  HOD: Dr. Suryanarayana  |  Dept. of CSE"
+    p4.font.size = Pt(12)
+    p4.font.color.rgb = TEXT_MUTED
 
     # Slide 2: Concurrency & Deadlocks
     s2 = prs.slides.add_slide(blank_layout)
