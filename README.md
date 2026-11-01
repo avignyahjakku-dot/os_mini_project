@@ -5,7 +5,7 @@
 [![Flask](https://img.shields.io/badge/Web_UI-Flask_3.1-orange.svg)](https://flask.palletsprojects.com/)
 [![Tests](https://img.shields.io/badge/Unit_Tests-15%2F15_Passing-brightgreen.svg)](tests/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-purple.svg)](LICENSE)
-[![Academic Year](https://img.shields.io/badge/Academic_Year-2024--2025-blueviolet.svg)](#)
+[![Academic Year](https://img.shields.io/badge/Academic_Year-2026--2027-blueviolet.svg)](#)
 
 > **Operating Systems Mini Project — Topic 11**  
 > **Course:** Operating Systems (CSE-301)  

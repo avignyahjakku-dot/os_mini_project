@@ -131,7 +131,7 @@ def create_report():
     p_ay = doc.add_paragraph()
     p_ay.alignment = WD_ALIGN_PARAGRAPH.CENTER
     p_ay.paragraph_format.space_after = Pt(28)
-    r_ay = p_ay.add_run("ACADEMIC YEAR 2024–2025")
+    r_ay = p_ay.add_run("ACADEMIC YEAR 2026–2027")
     r_ay.bold = True
     r_ay.font.size = Pt(11)
     r_ay.font.color.rgb = RGBColor(100, 116, 139)
@@ -208,7 +208,7 @@ def create_report():
         "Resource-Allocation Verification\" is a bona fide record of work carried out by Avignya Reddy Jakku "
         "(PRN: 25070721024), Aapti Reddy Erragunta (PRN: 25070721018), Ahila Meghana (PRN: 25070721002), "
         "and Krithika Reddy (PRN: 25070721062) in partial fulfillment of the requirements for the award of "
-        "the Degree of Bachelor of Technology in Computer Science and Engineering during the academic session 2024–2025.",
+        "the Degree of Bachelor of Technology in Computer Science and Engineering during the academic session 2026–2027.",
         space_after=40
     )
 

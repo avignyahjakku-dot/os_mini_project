@@ -2,7 +2,7 @@
 
 **Course Name:** Operating Systems (CSE-301)  
 **Project Topic 11:** Banker's Algorithm for Deadlock Avoidance and Resource-Allocation Verification  
-**Academic Year:** 2024–2025 | **Semester:** V | **Section:** CSE-A  
+**Academic Year:** 2026–2027 | **Semester:** V | **Section:** CSE-A  
 
 **Team Members & PRN:**
 1. **Avignya Reddy Jakku** — PRN: `25070721024`
@@ -16,7 +16,7 @@
 ---
 
 ## CERTIFICATE OF APPROVAL
-This is to certify that the mini project entitled **"Banker's Algorithm for Deadlock Avoidance and Resource-Allocation Verification"** is a bona fide record of work carried out by **Avignya Reddy Jakku (PRN: 25070721024)**, **Aapti Reddy Erragunta (PRN: 25070721018)**, **Ahila Meghana (PRN: 25070721002)**, and **Krithika Reddy (PRN: 25070721062)** in partial fulfillment of the requirements for the award of the Degree of *Bachelor of Technology in Computer Science and Engineering* during the academic session 2024–2025.
+This is to certify that the mini project entitled **"Banker's Algorithm for Deadlock Avoidance and Resource-Allocation Verification"** is a bona fide record of work carried out by **Avignya Reddy Jakku (PRN: 25070721024)**, **Aapti Reddy Erragunta (PRN: 25070721018)**, **Ahila Meghana (PRN: 25070721002)**, and **Krithika Reddy (PRN: 25070721062)** in partial fulfillment of the requirements for the award of the Degree of *Bachelor of Technology in Computer Science and Engineering* during the academic session 2026–2027.
 
 ```
 _________________________                 _________________________
