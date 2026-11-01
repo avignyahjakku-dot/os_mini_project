@@ -2,9 +2,10 @@
 generate_report.py - Programmatically Generates Academic Word (.docx) Report
 Adheres strictly to OS Mini Project Submission Guidelines:
 - A4 Portrait, 1-inch margins
-- Times New Roman, 12pt body, 1.5 line spacing, justified alignment
+- Times New Roman, 12pt body, clean left alignment (no stretched gaps)
 - 14pt bold chapter headings, 12pt bold section headings
-- IEEE citations, tables, and test matrices
+- Proper independent paragraphs for bullet points and numbered lists
+- Styled tables with proper padding, header shading, and centered numeric cells
 """
 
 import os
@@ -22,8 +23,8 @@ def set_cell_background(cell, hex_color):
     cell._tc.get_or_add_tcPr().append(shading_elm)
 
 
-def set_cell_margins(cell, top=100, bottom=100, left=150, right=150):
-    """Sets cell internal padding."""
+def set_cell_margins(cell, top=120, bottom=120, left=160, right=160):
+    """Sets internal padding (dxa) for a table cell."""
     tcPr = cell._tc.get_or_add_tcPr()
     tcMar = OxmlElement('w:tcMar')
     for m, val in [('w:top', top), ('w:bottom', bottom), ('w:left', left), ('w:right', right)]:
@@ -37,142 +38,265 @@ def set_cell_margins(cell, top=100, bottom=100, left=150, right=150):
 def create_report():
     doc = Document()
 
-    # Configure Margins: 1 inch on all sides
-    sections = doc.sections
-    for section in sections:
+    # Configure Margins: 1 inch on all sides (A4 Portrait)
+    for section in doc.sections:
         section.top_margin = Inches(1.0)
         section.bottom_margin = Inches(1.0)
         section.left_margin = Inches(1.0)
         section.right_margin = Inches(1.0)
-        section.page_width = Inches(8.27)  # A4 width
-        section.page_height = Inches(11.69)  # A4 height
+        section.page_width = Inches(8.27)
+        section.page_height = Inches(11.69)
 
-    # Configure Default Font: Times New Roman, 12pt
+    # Configure Default Style: Times New Roman, 12pt, Left-Aligned (avoids Word justification gaps)
     normal_style = doc.styles['Normal']
     normal_style.font.name = 'Times New Roman'
     normal_style.font.size = Pt(12)
-    normal_style.font.color.rgb = RGBColor(0, 0, 0)
-    normal_style.paragraph_format.line_spacing = 1.5
-    normal_style.paragraph_format.space_after = Pt(6)
-    normal_style.paragraph_format.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
+    normal_style.font.color.rgb = RGBColor(15, 23, 42)
+    normal_style.paragraph_format.line_spacing = 1.3
+    normal_style.paragraph_format.space_after = Pt(4)
+    normal_style.paragraph_format.alignment = WD_ALIGN_PARAGRAPH.LEFT
+
+    # Helper functions for clean typography
+    def add_p(text, space_after=4, bold=False, italic=False):
+        p = doc.add_paragraph()
+        p.alignment = WD_ALIGN_PARAGRAPH.LEFT
+        p.paragraph_format.space_after = Pt(space_after)
+        p.paragraph_format.line_spacing = 1.3
+        r = p.add_run(text)
+        r.bold = bold
+        r.italic = italic
+        return p
+
+    def add_bullet(bold_prefix, text, space_after=3):
+        p = doc.add_paragraph()
+        p.alignment = WD_ALIGN_PARAGRAPH.LEFT
+        p.paragraph_format.left_indent = Inches(0.25)
+        p.paragraph_format.space_after = Pt(space_after)
+        p.paragraph_format.line_spacing = 1.25
+        r_bullet = p.add_run("•  ")
+        r_bullet.bold = True
+        r_bullet.font.color.rgb = RGBColor(59, 130, 246)
+        if bold_prefix:
+            r_pre = p.add_run(bold_prefix + " ")
+            r_pre.bold = True
+        p.add_run(text)
+        return p
+
+    def add_numbered(num_str, bold_prefix, text, space_after=3):
+        p = doc.add_paragraph()
+        p.alignment = WD_ALIGN_PARAGRAPH.LEFT
+        p.paragraph_format.left_indent = Inches(0.25)
+        p.paragraph_format.space_after = Pt(space_after)
+        p.paragraph_format.line_spacing = 1.25
+        r_num = p.add_run(num_str + "  ")
+        r_num.bold = True
+        if bold_prefix:
+            r_pre = p.add_run(bold_prefix + " ")
+            r_pre.bold = True
+        p.add_run(text)
+        return p
+
+    def add_chapter(title_text):
+        p = doc.add_paragraph()
+        p.alignment = WD_ALIGN_PARAGRAPH.LEFT
+        p.paragraph_format.space_before = Pt(14)
+        p.paragraph_format.space_after = Pt(6)
+        r = p.add_run(title_text)
+        r.bold = True
+        r.font.size = Pt(14)
+        r.font.color.rgb = RGBColor(15, 23, 42)
+        return p
+
+    def add_section(title_text):
+        p = doc.add_paragraph()
+        p.alignment = WD_ALIGN_PARAGRAPH.LEFT
+        p.paragraph_format.space_before = Pt(10)
+        p.paragraph_format.space_after = Pt(4)
+        r = p.add_run(title_text)
+        r.bold = True
+        r.font.size = Pt(12)
+        r.font.color.rgb = RGBColor(30, 41, 59)
+        return p
 
     # ---------------------------------------------------------
     # COVER PAGE
     # ---------------------------------------------------------
     p_inst = doc.add_paragraph()
     p_inst.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    r_inst = p_inst.add_run("DEPARTMENT OF COMPUTER SCIENCE & ENGINEERING\nACADEMIC YEAR 2024–2025")
+    p_inst.paragraph_format.space_after = Pt(4)
+    r_inst = p_inst.add_run("DEPARTMENT OF COMPUTER SCIENCE & ENGINEERING")
     r_inst.bold = True
     r_inst.font.size = Pt(13)
 
-    doc.add_paragraph().paragraph_format.space_after = Pt(24)
+    p_ay = doc.add_paragraph()
+    p_ay.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    p_ay.paragraph_format.space_after = Pt(28)
+    r_ay = p_ay.add_run("ACADEMIC YEAR 2024–2025")
+    r_ay.bold = True
+    r_ay.font.size = Pt(11)
+    r_ay.font.color.rgb = RGBColor(100, 116, 139)
+
+    p_rep = doc.add_paragraph()
+    p_rep.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    p_rep.paragraph_format.space_after = Pt(6)
+    r_rep = p_rep.add_run("OPERATING SYSTEMS MINI PROJECT REPORT")
+    r_rep.bold = True
+    r_rep.font.size = Pt(13)
+    r_rep.font.color.rgb = RGBColor(59, 130, 246)
 
     p_title = doc.add_paragraph()
     p_title.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    r_title = p_title.add_run("OPERATING SYSTEMS MINI PROJECT REPORT\n\nBANKER'S ALGORITHM FOR DEADLOCK AVOIDANCE AND RESOURCE-ALLOCATION VERIFICATION")
+    p_title.paragraph_format.space_after = Pt(36)
+    r_title = p_title.add_run("BANKER'S ALGORITHM FOR DEADLOCK AVOIDANCE AND RESOURCE-ALLOCATION VERIFICATION")
     r_title.bold = True
     r_title.font.size = Pt(16)
     r_title.font.color.rgb = RGBColor(15, 23, 42)
 
-    doc.add_paragraph().paragraph_format.space_after = Pt(36)
-
-    # Submission Table
+    # Submission Table on Cover Page
     table_meta = doc.add_table(rows=5, cols=2)
     table_meta.alignment = WD_TABLE_ALIGNMENT.CENTER
-    meta_data = [
+    meta_rows = [
         ("Course Name:", "Operating Systems (CSE-301)"),
         ("Project Topic:", "Topic 11: Banker's Algorithm for Deadlock Avoidance"),
-        ("Student Name(s) & PRN:", "1. Avignya Reddy Jakku (PRN: 25070721024)\n2. Aapti Reddy Erragunta (PRN: 25070721018)\n3. Ahila Meghana (PRN: 25070721002)"),
-        ("Faculty Guide:", "Prof. Bibhu Prasad Sahu\nFaculty of Operating Systems, Dept. of CSE"),
-        ("Head of Department:", "Dr. Suryanarayana\nHead of Department, Dept. of CSE"),
+        ("Team Members & PRN:", "1. Avignya Reddy Jakku (PRN: 25070721024)\n2. Aapti Reddy Erragunta (PRN: 25070721018)\n3. Ahila Meghana (PRN: 25070721002)"),
+        ("Faculty Guide:", "Prof. Bibhu Prasad Sahu (Faculty of Operating Systems)"),
+        ("Head of Department:", "Dr. Suryanarayana (Head of Department of CSE)"),
     ]
-    for idx, (label, val) in enumerate(meta_data):
+
+    for idx, (label, val) in enumerate(meta_rows):
         row = table_meta.rows[idx]
-        cell_lbl, cell_val = row.cells[0], row.cells[1]
-        cell_lbl.paragraphs[0].add_run(label).bold = True
-        cell_val.paragraphs[0].add_run(val)
-        cell_lbl.width = Inches(2.5)
-        cell_val.width = Inches(3.8)
+        c0, c1 = row.cells[0], row.cells[1]
+        c0.width = Inches(2.2)
+        c1.width = Inches(4.0)
+        set_cell_margins(c0, 100, 100, 120, 120)
+        set_cell_margins(c1, 100, 100, 120, 120)
+
+        p0 = c0.paragraphs[0]
+        p0.alignment = WD_ALIGN_PARAGRAPH.LEFT
+        p0.paragraph_format.space_after = Pt(0)
+        r0 = p0.add_run(label)
+        r0.bold = True
+
+        p1 = c1.paragraphs[0]
+        p1.alignment = WD_ALIGN_PARAGRAPH.LEFT
+        p1.paragraph_format.space_after = Pt(0)
+        p1.paragraph_format.line_spacing = 1.2
+        # Split multiline cleanly
+        lines = val.split("\n")
+        for l_idx, line in enumerate(lines):
+            if l_idx > 0:
+                p1 = c1.add_paragraph()
+                p1.alignment = WD_ALIGN_PARAGRAPH.LEFT
+                p1.paragraph_format.space_after = Pt(0)
+                p1.paragraph_format.line_spacing = 1.2
+            p1.add_run(line)
 
     doc.add_page_break()
 
     # ---------------------------------------------------------
-    # CERTIFICATE & DECLARATION
+    # CERTIFICATE OF APPROVAL
     # ---------------------------------------------------------
-    h_cert = doc.add_paragraph()
-    h_cert.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    r_cert = h_cert.add_run("CERTIFICATE OF APPROVAL")
+    p_cert = doc.add_paragraph()
+    p_cert.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    p_cert.paragraph_format.space_after = Pt(18)
+    r_cert = p_cert.add_run("CERTIFICATE OF APPROVAL")
     r_cert.bold = True
     r_cert.font.size = Pt(14)
 
-    p_cert_body = doc.add_paragraph(
+    add_p(
         "This is to certify that the mini project entitled \"Banker's Algorithm for Deadlock Avoidance and "
         "Resource-Allocation Verification\" is a bona fide record of work carried out by Avignya Reddy Jakku "
         "(PRN: 25070721024), Aapti Reddy Erragunta (PRN: 25070721018), and Ahila Meghana (PRN: 25070721002) "
         "in partial fulfillment of the requirements for the award of the Degree of Bachelor of Technology "
-        "in Computer Science and Engineering during the academic session 2024–2025."
+        "in Computer Science and Engineering during the academic session 2024–2025.",
+        space_after=40
     )
-    p_cert_body.paragraph_format.space_after = Pt(36)
 
     # Signature blocks
-    sig_table = doc.add_table(rows=2, cols=2)
+    sig_table = doc.add_table(rows=1, cols=2)
     sig_table.alignment = WD_TABLE_ALIGNMENT.CENTER
-    sig_table.rows[0].cells[0].paragraphs[0].add_run("_____________________\nProf. Bibhu Prasad Sahu\nFaculty Guide (Operating Systems)\nDepartment of CSE").bold = True
-    sig_table.rows[0].cells[1].paragraphs[0].add_run("_____________________\nDr. Suryanarayana\nHead of Department\nDepartment of CSE").bold = True
-    sig_table.rows[0].cells[0].width = Inches(3.2)
-    sig_table.rows[0].cells[1].width = Inches(3.2)
+    c_sig0, c_sig1 = sig_table.rows[0].cells[0], sig_table.rows[0].cells[1]
+    c_sig0.width = Inches(3.1)
+    c_sig1.width = Inches(3.1)
+    set_cell_margins(c_sig0, 80, 80, 80, 80)
+    set_cell_margins(c_sig1, 80, 80, 80, 80)
 
-    doc.add_paragraph().paragraph_format.space_after = Pt(24)
+    p_s0 = c_sig0.paragraphs[0]
+    p_s0.alignment = WD_ALIGN_PARAGRAPH.LEFT
+    p_s0.paragraph_format.line_spacing = 1.2
+    r_s0 = p_s0.add_run("_______________________________\nProf. Bibhu Prasad Sahu\nFaculty Guide (Operating Systems)\nDepartment of CSE")
+    r_s0.bold = True
 
-    h_decl = doc.add_paragraph()
-    h_decl.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    r_decl = h_decl.add_run("STUDENT DECLARATION")
+    p_s1 = c_sig1.paragraphs[0]
+    p_s1.alignment = WD_ALIGN_PARAGRAPH.RIGHT
+    p_s1.paragraph_format.line_spacing = 1.2
+    r_s1 = p_s1.add_run("_______________________________\nDr. Suryanarayana\nHead of Department\nDepartment of CSE")
+    r_s1.bold = True
+
+    doc.add_paragraph().paragraph_format.space_after = Pt(28)
+
+    # Student Declaration
+    p_decl = doc.add_paragraph()
+    p_decl.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    p_decl.paragraph_format.space_after = Pt(12)
+    r_decl = p_decl.add_run("STUDENT DECLARATION")
     r_decl.bold = True
     r_decl.font.size = Pt(14)
 
-    doc.add_paragraph(
-        "We hereby declare that the project work presented in this mini-project report is an authentic record "
+    add_p(
+        "We hereby declare that the project work presented in this mini project report is an authentic record "
         "of our original work completed under the guidance of our faculty guide Prof. Bibhu Prasad Sahu. All citations, "
-        "literature sources, and algorithmic formulations have been properly referenced in accordance with standard academic integrity guidelines."
+        "literature sources, and algorithmic formulations have been properly referenced in accordance with standard academic integrity guidelines.",
+        space_after=18
     )
+
+    add_p("Avignya Reddy Jakku (25070721024)", bold=True, space_after=2)
+    add_p("Aapti Reddy Erragunta (25070721018)", bold=True, space_after=2)
+    add_p("Ahila Meghana (25070721002)", bold=True, space_after=18)
 
     doc.add_page_break()
 
     # ---------------------------------------------------------
     # ACKNOWLEDGEMENT & ABSTRACT
     # ---------------------------------------------------------
-    h_ack = doc.add_paragraph()
-    h_ack.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    r_ack = h_ack.add_run("ACKNOWLEDGEMENT")
+    p_ack = doc.add_paragraph()
+    p_ack.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    p_ack.paragraph_format.space_after = Pt(12)
+    r_ack = p_ack.add_run("ACKNOWLEDGEMENT")
     r_ack.bold = True
     r_ack.font.size = Pt(14)
 
-    doc.add_paragraph(
+    add_p(
         "We express our profound gratitude to our faculty guide Prof. Bibhu Prasad Sahu and our Head of Department "
-        "Dr. Suryanarayana, Department of Computer Science & Engineering, for providing essential academic guidance, "
-        "facilities, and encouragement throughout this Operating Systems mini project."
+        "Dr. Suryanarayana, Department of Computer Science & Engineering, for providing valuable academic guidance, "
+        "necessary computing facilities, and constant encouragement throughout this Operating Systems mini project.",
+        space_after=24
     )
 
-    doc.add_paragraph().paragraph_format.space_after = Pt(18)
-
-    h_abs = doc.add_paragraph()
-    h_abs.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    r_abs = h_abs.add_run("ABSTRACT")
+    p_abs = doc.add_paragraph()
+    p_abs.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    p_abs.paragraph_format.space_after = Pt(12)
+    r_abs = p_abs.add_run("ABSTRACT")
     r_abs.bold = True
     r_abs.font.size = Pt(14)
 
-    doc.add_paragraph(
-        "In multiprogrammed operating systems, deadlocks present a critical concurrency hazard where a set of processes "
-        "remain indefinitely blocked because each process holds resources while awaiting others held by peers in a circular "
+    add_p(
+        "In multiprogrammed operating systems, deadlocks represent a critical concurrency hazard where a set of processes "
+        "remain indefinitely blocked because each holds resources while awaiting others held by peers in a closed circular "
         "dependency. While deadlock prevention imposes rigid, throughput-degrading restrictions and deadlock detection is "
-        "inherently reactive, deadlock avoidance provides a dynamic, mathematically sound middle ground. Dijkstra's Banker's "
-        "Algorithm simulates resource allocations provisionally to ensure that the system never enters an unsafe state.\n\n"
+        "inherently reactive, deadlock avoidance provides a dynamic, mathematically sound balance. Dijkstra's Banker's "
+        "Algorithm simulates resource allocations provisionally to ensure that the system never enters an unsafe state.",
+        space_after=8
+    )
+
+    add_p(
         "This project presents a comprehensive, modular implementation of the Banker's Algorithm supporting multiple resource "
         "types and processes. The system incorporates: (1) a rigorous Safety Algorithm verifying whether safe execution sequences "
         "exist; (2) a complete Resource-Request Algorithm executing automated provisional allocation and state rollback upon unsafe "
-        "conditions; (3) an all-sequence backtracking depth-first search engine; and (4) dual interfaces including an interactive, "
-        "color-coded command-line interface (CLI) and a modern responsive Web Dashboard GUI. Rigorous empirical validation on standard "
-        "textbook benchmarks, stress cases, and edge tests confirms algorithmic correctness and polynomial time complexity O(m · n²)."
+        "conditions; (3) an all-sequence backtracking depth-first search engine; and (4) dual interfaces including an interactive "
+        "command-line interface (CLI) and a modern responsive Web Dashboard GUI. Rigorous empirical validation on textbook benchmarks, "
+        "stress cases, and edge tests confirms algorithmic correctness and polynomial time complexity O(m · n²).",
+        space_after=12
     )
 
     doc.add_page_break()
@@ -180,9 +304,10 @@ def create_report():
     # ---------------------------------------------------------
     # TABLE OF CONTENTS
     # ---------------------------------------------------------
-    h_toc = doc.add_paragraph()
-    h_toc.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    r_toc = h_toc.add_run("TABLE OF CONTENTS")
+    p_toc = doc.add_paragraph()
+    p_toc.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    p_toc.paragraph_format.space_after = Pt(12)
+    r_toc = p_toc.add_run("TABLE OF CONTENTS")
     r_toc.bold = True
     r_toc.font.size = Pt(14)
 
@@ -229,39 +354,31 @@ def create_report():
     for idx, (title, page) in enumerate(toc_items):
         r = toc_table.rows[idx]
         c0, c1 = r.cells[0], r.cells[1]
-        c0.paragraphs[0].add_run(title)
-        c1.paragraphs[0].add_run(page)
-        c0.width = Inches(5.2)
-        c1.width = Inches(1.1)
-        c1.paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+        c0.width = Inches(5.3)
+        c1.width = Inches(0.9)
+        set_cell_margins(c0, 40, 40, 60, 60)
+        set_cell_margins(c1, 40, 40, 60, 60)
+
+        p0 = c0.paragraphs[0]
+        p0.alignment = WD_ALIGN_PARAGRAPH.LEFT
+        p0.paragraph_format.space_after = Pt(0)
+        p0.paragraph_format.line_spacing = 1.15
+        p0.add_run(title)
+
+        p1 = c1.paragraphs[0]
+        p1.alignment = WD_ALIGN_PARAGRAPH.RIGHT
+        p1.paragraph_format.space_after = Pt(0)
+        p1.paragraph_format.line_spacing = 1.15
+        p1.add_run(page)
 
     doc.add_page_break()
 
     # ---------------------------------------------------------
     # CHAPTER 1: INTRODUCTION
     # ---------------------------------------------------------
-    def add_chapter_title(title_text):
-        p = doc.add_paragraph()
-        r = p.add_run(title_text)
-        r.bold = True
-        r.font.size = Pt(14)
-        r.font.color.rgb = RGBColor(15, 23, 42)
-        p.paragraph_format.space_before = Pt(12)
-        p.paragraph_format.space_after = Pt(8)
-        return p
-
-    def add_section_title(title_text):
-        p = doc.add_paragraph()
-        r = p.add_run(title_text)
-        r.bold = True
-        r.font.size = Pt(12)
-        p.paragraph_format.space_before = Pt(8)
-        p.paragraph_format.space_after = Pt(4)
-        return p
-
-    add_chapter_title("CHAPTER 1: INTRODUCTION")
-    add_section_title("1.1 Concurrency and Deadlock Overview")
-    doc.add_paragraph(
+    add_chapter("CHAPTER 1: INTRODUCTION")
+    add_section("1.1 Concurrency and Deadlock Overview")
+    add_p(
         "In modern multiprogrammed operating systems, multiple processes execute concurrently and compete for a finite set "
         "of physical and logical resources, such as CPU cores, main memory segments, I/O devices, files, and mutex locks. "
         "When two or more processes request exclusive access to overlapping sets of resources, an undesirable condition known as "
@@ -269,30 +386,22 @@ def create_report():
         "an event (typically resource acquisition) that can only be triggered by another blocked process in the same set."
     )
 
-    add_section_title("1.2 The Four Coffman Deadlock Conditions")
-    doc.add_paragraph(
-        "As established by E. G. Coffman et al. (1971), a deadlock can occur if and only if the following four conditions "
-        "hold simultaneously within the operating system:\n"
-        "1. Mutual Exclusion: At least one resource must be held in a non-shareable mode; only one process may use it at a time.\n"
-        "2. Hold and Wait: A process must currently hold at least one resource while simultaneously requesting additional resources "
-        "held by other processes.\n"
-        "3. No Preemption: Resources cannot be forcibly preempted from a process holding them; they can only be released voluntarily "
-        "after the process finishes its task.\n"
-        "4. Circular Wait: A closed chain of processes {P0, P1, ..., Pn} must exist such that P0 is waiting for a resource held by P1, "
-        "P1 is waiting for P2, and Pn is waiting for a resource held by P0."
-    )
+    add_section("1.2 The Four Coffman Deadlock Conditions")
+    add_p("As established by E. G. Coffman et al. (1971), a deadlock can occur if and only if all four of the following conditions hold simultaneously:")
+    add_numbered("1.", "Mutual Exclusion:", "At least one resource must be held in a non-shareable mode; only one process may use it at a time.")
+    add_numbered("2.", "Hold and Wait:", "A process must currently hold at least one resource while simultaneously requesting additional resources held by other processes.")
+    add_numbered("3.", "No Preemption:", "Resources cannot be forcibly preempted from a process; they can only be released voluntarily after completion.")
+    add_numbered("4.", "Circular Wait:", "A closed chain of processes {P0, P1, ..., Pn} exists such that P0 waits for P1, P1 waits for P2, and Pn waits for P0.")
 
-    add_section_title("1.3 Deadlock Handling Strategies Comparison")
-    doc.add_paragraph(
-        "Operating systems handle deadlocks using one of four foundational strategies:\n"
-        "• Deadlock Ignorance (Ostrich Algorithm): Assume deadlocks never occur; reboot if frozen (used by general-purpose OS like Linux and Windows due to low frequency).\n"
-        "• Deadlock Prevention: Invalidate at least one of the four Coffman conditions statically. While safe, it causes low resource utilization and reduced system throughput.\n"
-        "• Deadlock Detection and Recovery: Allow deadlocks to occur, periodically execute a detection graph algorithm, and recover by killing processes or preempting resources.\n"
-        "• Deadlock Avoidance: Make dynamic allocation decisions based on advance knowledge of maximum resource demands, ensuring the system never enters an unsafe state."
-    )
+    add_section("1.3 Deadlock Handling Strategies Comparison")
+    add_p("Operating systems handle deadlocks using one of four foundational strategies:")
+    add_bullet("Deadlock Ignorance (Ostrich Algorithm):", "Assume deadlocks never occur; reboot if frozen. Used in general-purpose systems like Linux and Windows due to low deadlock frequency.")
+    add_bullet("Deadlock Prevention:", "Statically invalidate at least one of the four Coffman conditions. Highly safe, but causes low resource utilization and reduced system throughput.")
+    add_bullet("Deadlock Detection and Recovery:", "Allow deadlocks to occur, periodically execute a cycle-detection graph algorithm, and recover by killing processes or preempting resources.")
+    add_bullet("Deadlock Avoidance:", "Make dynamic allocation decisions based on advance knowledge of maximum resource demands, ensuring the system never enters an unsafe state.")
 
-    add_section_title("1.4 Banker's Algorithm Principles")
-    doc.add_paragraph(
+    add_section("1.4 Banker's Algorithm Principles")
+    add_p(
         "Formulated by Edsger W. Dijkstra in 1965, the Banker's Algorithm is the quintessential deadlock avoidance algorithm. "
         "The algorithm takes its name from a banking metaphor: a small-town banker manages cash credit lines for multiple clients. "
         "The banker will never allocate cash in a way that leaves the bank unable to satisfy the maximum remaining credit demand of at "
@@ -302,9 +411,9 @@ def create_report():
     # ---------------------------------------------------------
     # CHAPTER 2: PROBLEM STATEMENT AND OBJECTIVES
     # ---------------------------------------------------------
-    add_chapter_title("CHAPTER 2: PROBLEM STATEMENT AND OBJECTIVES")
-    add_section_title("2.1 Problem Statement")
-    doc.add_paragraph(
+    add_chapter("CHAPTER 2: PROBLEM STATEMENT AND OBJECTIVES")
+    add_section("2.1 Problem Statement")
+    add_p(
         "Operating system resource managers face the challenge of scheduling dynamic multi-resource requests from concurrent "
         "processes without inducing deadlock states or starving active tasks. Given a system with n processes and m distinct "
         "resource types, the problem is to design and implement a software simulation engine that continuously validates system "
@@ -312,26 +421,25 @@ def create_report():
         "whether to grant the allocation or force the requesting process to wait while rolling back provisional state changes."
     )
 
-    add_section_title("2.2 Specific Project Objectives")
-    doc.add_paragraph(
-        "The specific technical objectives of this mini project are:\n"
-        "1. Algorithmic Rigor: Implement Dijkstra's Banker's Safety Algorithm to verify system state safety and generate safe sequences.\n"
-        "2. Resource Request Handling: Implement the complete Resource-Request Algorithm with automatic state rollback on unsafe predictions.\n"
-        "3. Multi-Path Traversal: Implement a backtracking depth-first search engine to discover all valid safe execution permutations.\n"
-        "4. Dual User Interfaces: Build both a high-productivity terminal Command Line Interface (CLI) and an interactive web-based graphical dashboard.\n"
-        "5. Cross-Language Implementation: Provide production-quality implementations in Python 3, modern C++17, and ANSI C.\n"
-        "6. Empirical Validation: Validate system behavior across textbook cases, circular deadlocks, boundary tests, and polynomial complexity benchmarks."
-    )
+    add_section("2.2 Specific Objectives")
+    add_numbered("1.", "Algorithmic Rigor:", "Implement Dijkstra's Banker's Safety Algorithm to verify system state safety and generate safe sequences.")
+    add_numbered("2.", "Resource Request Handling:", "Implement the complete Resource-Request Algorithm with automatic state rollback on unsafe predictions.")
+    add_numbered("3.", "Multi-Path Traversal:", "Implement a backtracking depth-first search engine to discover all valid safe execution permutations.")
+    add_numbered("4.", "Dual User Interfaces:", "Build both a high-productivity terminal Command Line Interface (CLI) and an interactive web-based graphical dashboard.")
+    add_numbered("5.", "Cross-Language Implementation:", "Provide production-quality implementations in Python 3, modern C++17, and ANSI C.")
+    add_numbered("6.", "Empirical Validation:", "Validate system behavior across textbook cases, circular deadlocks, boundary tests, and polynomial complexity benchmarks.")
 
     # ---------------------------------------------------------
     # CHAPTER 3: LITERATURE SURVEY
     # ---------------------------------------------------------
-    add_chapter_title("CHAPTER 3: LITERATURE SURVEY AND EXISTING SYSTEMS")
-    doc.add_paragraph(
+    add_chapter("CHAPTER 3: LITERATURE SURVEY AND EXISTING SYSTEMS")
+    add_p(
         "The study of deadlock avoidance originated with Dijkstra's pioneering paper (1965), which introduced the concept of safe states "
         "using single resource types. Habermann (1969) generalized the model to accommodate multiple resource instances. Silberschatz, "
         "Galvin, and Gagne (2018) formalized the standard modern representation of the algorithm using Available, Max, Allocation, "
-        "and Need matrices, defining the O(m · n²) time complexity bounds.\n\n"
+        "and Need matrices, defining the O(m · n²) time complexity bounds."
+    )
+    add_p(
         "Existing commercial operating systems such as Linux, Windows NT/11, and macOS do not employ Banker's Algorithm for kernel thread "
         "synchronization because acquiring accurate, static declarations of maximum memory and file handle requirements in advance from "
         "arbitrary user-space applications is unfeasible in practice. However, Banker's Algorithm remains essential in specialized mission-critical "
@@ -342,110 +450,74 @@ def create_report():
     # ---------------------------------------------------------
     # CHAPTER 4: REQUIREMENTS AND TOOLS
     # ---------------------------------------------------------
-    add_chapter_title("CHAPTER 4: REQUIREMENTS AND TOOL SPECIFICATIONS")
-    add_section_title("4.1 Hardware Requirements")
-    doc.add_paragraph(
-        "• Processor: Modern x86-64 / ARM64 dual-core processor (Intel Core i3/i5/i7, AMD Ryzen, or Apple Silicon).\n"
-        "• Memory (RAM): Minimum 2.0 GB (4.0 GB recommended for browser GUI).\n"
-        "• Storage: Minimum 100 MB available disk storage space.\n"
-        "• Display: Standard 1080p (1920x1080) resolution for optimal web dashboard rendering."
-    )
+    add_chapter("CHAPTER 4: REQUIREMENTS AND TOOL SPECIFICATIONS")
+    add_section("4.1 Hardware Requirements")
+    add_bullet("Processor:", "Modern x86-64 / ARM64 dual-core processor (Intel Core i3/i5/i7, AMD Ryzen, or Apple Silicon).")
+    add_bullet("Memory (RAM):", "Minimum 2.0 GB (4.0 GB recommended for browser GUI).")
+    add_bullet("Storage:", "Minimum 100 MB available disk storage space.")
+    add_bullet("Display:", "Standard 1080p (1920x1080) resolution for optimal web dashboard rendering.")
 
-    add_section_title("4.2 Software and Development Tools")
-    doc.add_paragraph(
-        "• Operating System: Windows 10/11, Linux (Ubuntu/Debian/Fedora), or macOS.\n"
-        "• Primary Programming Language: Python 3.10+ (tested on Python 3.13).\n"
-        "• Web Framework: Flask 3.1.1 (lightweight WSGI web server).\n"
-        "• Frontend Architecture: HTML5, CSS3 (Modern Flexbox & CSS Grid), ES6+ Vanilla JavaScript.\n"
-        "• Systems Implementation: Modern C++17 (g++ / Clang / MSVC) and ANSI C99.\n"
-        "• Document Generation Tools: python-docx (v1.2.0) and python-pptx (v1.0.2).\n"
-        "• Testing Suite: Python unittest framework."
-    )
+    add_section("4.2 Software and Development Tools")
+    add_bullet("Operating System:", "Windows 10/11, Linux (Ubuntu/Debian/Fedora), or macOS.")
+    add_bullet("Primary Programming Language:", "Python 3.10+ (tested on Python 3.13).")
+    add_bullet("Web Framework:", "Flask 3.1.1 (lightweight WSGI web server).")
+    add_bullet("Frontend Architecture:", "HTML5, CSS3 (Modern Flexbox & CSS Grid), ES6+ Vanilla JavaScript.")
+    add_bullet("Systems Implementation:", "Modern C++17 (g++ / Clang / MSVC) and ANSI C99.")
+    add_bullet("Document Generation Tools:", "python-docx (v1.2.0) and python-pptx (v1.0.2).")
+    add_bullet("Testing Suite:", "Python unittest framework (15/15 passing tests).")
 
     # ---------------------------------------------------------
     # CHAPTER 5: SYSTEM DESIGN AND METHODOLOGY
     # ---------------------------------------------------------
-    add_chapter_title("CHAPTER 5: SYSTEM DESIGN AND METHODOLOGY")
-    add_section_title("5.1 System Architecture")
-    doc.add_paragraph(
+    add_chapter("CHAPTER 5: SYSTEM DESIGN AND METHODOLOGY")
+    add_section("5.1 System Architecture")
+    add_p(
         "The project follows a modular, decoupled architecture consisting of three primary layers:\n"
-        "1. Core Domain Engine (`src/models.py`, `src/banker.py`): Houses data structures, matrix validation logic, the safety evaluation algorithm, "
+        "1. Core Domain Engine (src/models.py, src/banker.py): Houses data structures, matrix validation logic, the safety evaluation algorithm, "
         "the resource request handler, and the state rollback manager.\n"
-        "2. Presentation Layer (`src/cli.py`, `web/app.py`): Delivers dual interaction mediums—a formatted command-line interface with colorized "
+        "2. Presentation Layer (src/cli.py, web/app.py): Delivers dual interaction mediums—a formatted command-line interface with colorized "
         "ASCII state tables and a modern Flask-powered web UI.\n"
-        "3. Verification & Benchmark Layer (`tests/`, `test_cases/`): Automated regression test suites verifying boundary correctness and empirical "
+        "3. Verification & Benchmark Layer (tests/, test_cases/): Automated regression test suites verifying boundary correctness and empirical "
         "time complexity scaling."
     )
 
-    add_section_title("5.2 Mathematical Formalism and Data Structures")
-    doc.add_paragraph(
-        "Let n be the number of processes and m be the number of resource types:\n"
-        "• Available: Vector of length m. If Available[j] = k, there are k instances of resource type Rj available.\n"
-        "• Max: An n × m matrix. If Max[i][j] = k, process Pi may request at most k instances of resource type Rj.\n"
-        "• Allocation: An n × m matrix. If Allocation[i][j] = k, process Pi is currently allocated k instances of resource type Rj.\n"
-        "• Need: An n × m matrix. Need[i][j] = Max[i][j] - Allocation[i][j]. Represents remaining resources Pi may need to finish."
-    )
+    add_section("5.2 Mathematical Formalism and Data Structures")
+    add_p("Let n be the number of processes and m be the number of resource types:")
+    add_bullet("Available[m]:", "Vector of length m. If Available[j] = k, there are k instances of resource type Rj available.")
+    add_bullet("Max[n][m]:", "Matrix n x m. If Max[i][j] = k, process Pi may request at most k instances of resource type Rj.")
+    add_bullet("Allocation[n][m]:", "Matrix n x m. If Allocation[i][j] = k, process Pi currently holds k instances of resource type Rj.")
+    add_bullet("Need[n][m]:", "Matrix n x m. Need[i][j] = Max[i][j] - Allocation[i][j]. Represents remaining resources Pi may request to finish.")
 
-    add_section_title("5.3 Safety Algorithm Pseudocode")
-    doc.add_paragraph(
-        "Algorithm 1: Banker's Safety Algorithm\n"
-        "Input: Available vector, Allocation matrix, Need matrix\n"
-        "Output: is_safe (Boolean), safe_sequence (List of processes)\n\n"
-        "1. Let Work be a vector of length m, initialized to Available.\n"
-        "   Let Finish be a boolean array of length n, initialized to [False, ..., False].\n"
-        "2. Search for an index i such that:\n"
-        "      a. Finish[i] == False, and\n"
-        "      b. Need[i][j] <= Work[j] for all j ∈ {0, ..., m-1}.\n"
-        "3. If such an i is found:\n"
-        "      Work = Work + Allocation[i]\n"
-        "      Finish[i] = True\n"
-        "      Append Pi to safe_sequence\n"
-        "      Repeat Step 2.\n"
-        "4. If Finish[i] == True for all i ∈ {0, ..., n-1}, the system is SAFE.\n"
-        "   Otherwise, the system is UNSAFE (potential deadlock)."
-    )
+    add_section("5.3 Safety Algorithm Flow and Pseudocode")
+    add_numbered("Step 1:", "Initialization:", "Work = Available (vector of length m); Finish[i] = False for all i = 0, ..., n-1.")
+    add_numbered("Step 2:", "Candidate Search:", "Find an index i such that Finish[i] == False AND Need[i][j] <= Work[j] for all j. If none exists, go to Step 4.")
+    add_numbered("Step 3:", "Reclaim Resources:", "Work = Work + Allocation[i]; Finish[i] = True; Append Pi to safe sequence. Repeat Step 2.")
+    add_numbered("Step 4:", "Verification:", "If Finish[i] == True for all i, system is SAFE. Otherwise, system is UNSAFE (potential deadlock).")
 
-    add_section_title("5.4 Resource-Request Algorithm and Rollback")
-    doc.add_paragraph(
-        "Algorithm 2: Resource-Request Algorithm\n"
-        "Let Request[i] be the vector of requested resources by process Pi.\n\n"
-        "Step 1: If Request[i][j] > Need[i][j] for any j, raise ERROR (process exceeded maximum claim).\n"
-        "Step 2: If Request[i][j] > Available[j] for any j, process Pi MUST WAIT (resources insufficient).\n"
-        "Step 3: Simulate provisional allocation:\n"
-        "        Available = Available - Request[i]\n"
-        "        Allocation[i] = Allocation[i] + Request[i]\n"
-        "        Need[i] = Need[i] - Request[i]\n"
-        "Step 4: Execute Safety Algorithm on the provisional state:\n"
-        "        • If SAFE: Commit allocation permanently. Process Pi continues.\n"
-        "        • If UNSAFE: Rollback to previous state:\n"
-        "          Available = Available + Request[i]\n"
-        "          Allocation[i] = Allocation[i] - Request[i]\n"
-        "          Need[i] = Need[i] + Request[i]\n"
-        "          Process Pi must wait."
-    )
+    add_section("5.4 Resource-Request Algorithm and Rollback")
+    add_numbered("Rule 1:", "Claim Verification:", "If Request[i][j] > Need[i][j] for any j, raise ERROR (process exceeded maximum claim).")
+    add_numbered("Rule 2:", "Availability Check:", "If Request[i][j] > Available[j] for any j, process Pi MUST WAIT (resources insufficient).")
+    add_numbered("Rule 3:", "Provisional Allocation:", "Pretend to allocate: Available -= Request; Allocation[i] += Request; Need[i] -= Request.")
+    add_numbered("Rule 4:", "Safety Check & Rollback:", "Run Safety Algorithm on provisional state: If safe, grant allocation permanently; if unsafe, ROLLBACK state and force process to wait.")
 
     # ---------------------------------------------------------
     # CHAPTER 6: IMPLEMENTATION
     # ---------------------------------------------------------
-    add_chapter_title("CHAPTER 6: IMPLEMENTATION DETAILS")
-    doc.add_paragraph(
-        "The project implementation is structured cleanly across modular directories:\n"
-        "• `src/models.py`: Defines BankerState with comprehensive validation (non-negativity, dimension matching, Allocation <= Max), "
-        "and dataclasses for SimulationStep, SafetyResult, and RequestResult.\n"
-        "• `src/banker.py`: Implements BankerEngine housing `check_safety()`, `request_resources()`, `release_resources()`, "
-        "`find_all_safe_sequences()`, and comparative `detect_deadlock()`.\n"
-        "• `src/cli.py`: Interactive console interface featuring styled ASCII matrix tables, live request simulation, preset loading, and benchmark runner.\n"
-        "• `web/app.py`: Flask WSGI backend serving RESTful endpoints for real-time state manipulation and algorithm triggering.\n"
-        "• `web/static/`: Vanilla JS and modern CSS3 dashboard providing responsive matrix tables, animated step traces, and resource utilization bars.\n"
-        "• `cpp/bankers_algorithm.cpp`: High-performance C++17 implementation using vectors and stream formatting for university lab environments."
-    )
+    add_chapter("CHAPTER 6: IMPLEMENTATION DETAILS")
+    add_p("The project implementation is structured cleanly across modular directories:")
+    add_bullet("src/models.py:", "Defines BankerState with strict validation (non-negativity, dimension matching, Allocation <= Max), and dataclasses for SimulationStep, SafetyResult, and RequestResult.")
+    add_bullet("src/banker.py:", "Implements BankerEngine housing check_safety(), request_resources(), release_resources(), find_all_safe_sequences(), and comparative detect_deadlock().")
+    add_bullet("src/cli.py:", "Interactive console interface featuring styled ASCII matrix tables, live request simulation, preset loading, and benchmark runner.")
+    add_bullet("web/app.py:", "Flask WSGI backend serving RESTful endpoints for real-time state manipulation and algorithm triggering.")
+    add_bullet("web/static/:", "Vanilla JS and modern CSS3 dashboard providing responsive matrix tables, animated step traces, and resource utilization bars.")
+    add_bullet("cpp/bankers_algorithm.cpp:", "High-performance C++17 implementation using vectors and stream formatting for university lab environments.")
 
     # ---------------------------------------------------------
     # CHAPTER 7: TESTING AND RESULTS
     # ---------------------------------------------------------
-    add_chapter_title("CHAPTER 7: TESTING, VERIFICATION, AND EXPERIMENTAL RESULTS")
-    add_section_title("7.1 Test Case 1: Silberschatz Textbook Baseline")
-    doc.add_paragraph(
+    add_chapter("CHAPTER 7: TESTING, VERIFICATION, AND EXPERIMENTAL RESULTS")
+    add_section("7.1 Test Case 1: Silberschatz Textbook Baseline")
+    add_p(
         "The system was evaluated against the canonical 5-process, 3-resource benchmark from Silberschatz Operating System Concepts (Chapter 8):\n"
         "Available = [3, 3, 2]; Allocation = [P0: [0,1,0], P1: [2,0,0], P2: [3,0,2], P3: [2,1,1], P4: [0,0,2]]; "
         "Max = [P0: [7,5,3], P1: [3,2,2], P2: [9,0,2], P3: [2,2,2], P4: [4,3,3]]."
@@ -457,8 +529,14 @@ def create_report():
     test_headers = ["Step", "Process", "Work (Before)", "Need", "Allocation", "Work (After)"]
     for j, h in enumerate(test_headers):
         cell = table_test.rows[0].cells[j]
-        cell.paragraphs[0].add_run(h).bold = True
-        set_cell_background(cell, "E2E8F0")
+        set_cell_background(cell, "F1F5F9")
+        set_cell_margins(cell, 80, 80, 100, 100)
+        p = cell.paragraphs[0]
+        p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        p.paragraph_format.space_after = Pt(0)
+        r = p.add_run(h)
+        r.bold = True
+        r.font.size = Pt(11)
 
     trace_data = [
         ("1", "P1", "[3, 3, 2]", "[1, 2, 2]", "[2, 0, 0]", "[5, 3, 2]"),
@@ -469,65 +547,64 @@ def create_report():
     ]
     for row_idx, data_row in enumerate(trace_data, start=1):
         for col_idx, val in enumerate(data_row):
-            table_test.rows[row_idx].cells[col_idx].paragraphs[0].add_run(val)
+            cell = table_test.rows[row_idx].cells[col_idx]
+            set_cell_margins(cell, 60, 60, 80, 80)
+            p = cell.paragraphs[0]
+            p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+            p.paragraph_format.space_after = Pt(0)
+            p.add_run(val)
 
-    doc.add_paragraph().paragraph_format.space_after = Pt(8)
-    doc.add_paragraph("Primary Safe Sequence: P1 → P3 → P0 → P2 → P4. Total Alternative Safe Sequences: 16.")
+    add_p("Primary Safe Sequence: P1 → P3 → P0 → P2 → P4. Total Alternative Safe Sequences: 16.", bold=True, space_after=8)
 
-    add_section_title("7.2 Test Case 2: Unsafe Deadlock Danger State")
-    doc.add_paragraph(
+    add_section("7.2 Test Case 2: Unsafe Deadlock Danger State")
+    add_p(
         "A system state with Available = [0, 0, 0] where all processes hold resources and each requires at least 1 unit to complete. "
         "The safety algorithm halts with zero candidate processes satisfying Need <= Work. "
         "Result: System identified as UNSAFE STATE; deadlock danger flagged; allocation denied."
     )
 
-    add_section_title("7.3 Test Case 3: Valid Resource Request Simulation")
-    doc.add_paragraph(
-        "In the baseline state, process P1 requests Request = [1, 0, 2].\n"
-        "• Check 1: [1, 0, 2] <= Need [1, 2, 2] → Valid.\n"
-        "• Check 2: [1, 0, 2] <= Available [3, 3, 2] → Valid.\n"
-        "• Provisional state evaluated: Available becomes [2, 3, 0].\n"
-        "• Safety algorithm executes: Finds valid safe sequence P1 → P3 → P0 → P2 → P4.\n"
-        "• Outcome: REQUEST GRANTED; state changes committed."
-    )
+    add_section("7.3 Test Case 3: Valid Resource Request Simulation")
+    add_bullet("Request Parameter:", "Process P1 requests Request = [1, 0, 2].")
+    add_bullet("Verification 1:", "[1, 0, 2] <= Need [1, 2, 2] (Passed).")
+    add_bullet("Verification 2:", "[1, 0, 2] <= Available [3, 3, 2] (Passed).")
+    add_bullet("Provisional State:", "Available becomes [2, 3, 0]. Safety algorithm finds safe sequence P1 → P3 → P0 → P2 → P4.")
+    add_bullet("Outcome:", "REQUEST GRANTED; state changes committed permanently.")
 
-    add_section_title("7.4 Test Case 4: Invalid Request Rejection and Rollback")
-    doc.add_paragraph(
-        "1. Request Exceeding Max Need: Process P0 requests [0, 6, 0]. System halts at Step 1 with status DENIED_EXCEEDS_MAX.\n"
-        "2. Request Exceeding Available: Process P4 requests [4, 3, 1] when Available is [3, 3, 2]. Halts at Step 2 with status DENIED_INSUFFICIENT_AVAILABLE.\n"
-        "3. Request Leading to Unsafe State: Process P0 requests [3, 3, 0]. Provisional available becomes [0, 0, 2]. No process can finish. "
-        "Status: DENIED_UNSAFE_STATE; provisional changes immediately rolled back."
-    )
+    add_section("7.4 Test Case 4: Invalid Request Rejection and Rollback")
+    add_numbered("1.", "Request Exceeding Max Need:", "Process P0 requests [0, 6, 0]. System halts at Step 1 with status DENIED_EXCEEDS_MAX.")
+    add_numbered("2.", "Request Exceeding Available:", "Process P4 requests [4, 3, 1] when Available is [3, 3, 2]. Halts at Step 2 with status DENIED_INSUFFICIENT_AVAILABLE.")
+    add_numbered("3.", "Request Leading to Unsafe State:", "Process P0 requests [3, 3, 0]. Provisional available becomes [0, 0, 2]. No process can finish. Status: DENIED_UNSAFE_STATE; provisional changes immediately rolled back.")
 
     # ---------------------------------------------------------
     # CHAPTER 8: DISCUSSION
     # ---------------------------------------------------------
-    add_chapter_title("CHAPTER 8: DISCUSSION AND COMPLEXITY ANALYSIS")
-    add_section_title("8.1 Algorithmic Time and Space Complexity")
-    doc.add_paragraph(
-        "• Time Complexity: In the worst case, the safety algorithm scans up to n unfinished processes in each pass. "
-        "In each pass, verifying Need[i][j] <= Work[j] takes m operations. If one process completes per pass, the total operations "
-        "are bounded by: T(n, m) = m · n + m · (n - 1) + ... + m · 1 = m · n(n + 1)/2 = O(m · n²).\n"
-        "• Space Complexity: Storing Available, Work, and Finish vectors requires O(m + n) auxiliary space, which is optimal."
-    )
+    add_chapter("CHAPTER 8: DISCUSSION AND COMPLEXITY ANALYSIS")
+    add_section("8.1 Algorithmic Time and Space Complexity")
+    add_bullet("Time Complexity: O(m · n²):", "In the worst case, the safety algorithm scans up to n processes per pass. In each pass, evaluating Need <= Work takes m operations. Total operations bounded by m · n(n+1)/2 = O(m · n²).")
+    add_bullet("Space Complexity: O(m + n):", "Storing Available, Work, and Finish vectors requires linear auxiliary space, which is optimal.")
 
-    add_section_title("8.2 Resource Utilization Metrics")
-    doc.add_paragraph(
+    add_section("8.2 Resource Utilization Metrics")
+    add_p(
         "The system dynamically computes the resource utilization percentage for each resource type: "
         "U(Rj) = (Total Allocated Instances of Rj / Total System Capacity of Rj) × 100%. "
         "In the baseline state, resource utilization stands at A: 70.0%, B: 40.0%, and C: 71.43%. Following P1's granted request, "
         "utilization climbs to A: 80.0%, B: 40.0%, and C: 100.0%, demonstrating the engine's ability to maintain high throughput safely."
     )
 
-    add_section_title("8.3 Comparison of Deadlock Strategies")
-    
+    add_section("8.3 Comparison of Deadlock Strategies")
     comp_table = doc.add_table(rows=5, cols=4)
     comp_table.alignment = WD_TABLE_ALIGNMENT.CENTER
     comp_headers = ["Strategy", "Resource Utilization", "Runtime Overhead", "Feasibility in General OS"]
     for j, h in enumerate(comp_headers):
         cell = comp_table.rows[0].cells[j]
-        cell.paragraphs[0].add_run(h).bold = True
-        set_cell_background(cell, "E2E8F0")
+        set_cell_background(cell, "F1F5F9")
+        set_cell_margins(cell, 80, 80, 100, 100)
+        p = cell.paragraphs[0]
+        p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        p.paragraph_format.space_after = Pt(0)
+        r = p.add_run(h)
+        r.bold = True
+        r.font.size = Pt(10.5)
 
     comp_rows = [
         ("Prevention", "Low (rigid limits)", "Low (static)", "Medium (poor concurrency)"),
@@ -537,29 +614,34 @@ def create_report():
     ]
     for r_idx, r_data in enumerate(comp_rows, start=1):
         for c_idx, val in enumerate(r_data):
-            comp_table.rows[r_idx].cells[c_idx].paragraphs[0].add_run(val)
+            cell = comp_table.rows[r_idx].cells[c_idx]
+            set_cell_margins(cell, 60, 60, 80, 80)
+            p = cell.paragraphs[0]
+            p.alignment = WD_ALIGN_PARAGRAPH.LEFT if c_idx == 0 else WD_ALIGN_PARAGRAPH.CENTER
+            p.paragraph_format.space_after = Pt(0)
+            p.add_run(val)
 
-    doc.add_paragraph().paragraph_format.space_after = Pt(12)
+    add_p("", space_after=12)
 
     # ---------------------------------------------------------
     # CHAPTER 9: CONCLUSION
     # ---------------------------------------------------------
-    add_chapter_title("CHAPTER 9: CONCLUSION AND FUTURE SCOPE")
-    doc.add_paragraph(
+    add_chapter("CHAPTER 9: CONCLUSION AND FUTURE SCOPE")
+    add_p(
         "This project successfully developed an end-to-end, mathematically verified simulation and verification platform for "
         "Dijkstra's Banker's Algorithm for deadlock avoidance. The software accurately detects system safety, computes all possible "
         "safe process ordering permutations, simulates dynamic resource requests, enforces maximum claim constraints, and executes "
-        "flawless state rollbacks whenever an allocation would compromise system integrity.\n\n"
-        "Future Scope:\n"
-        "1. Dynamic Process Registration: Allowing processes to dynamically join and depart without re-initializing matrix dimensions.\n"
-        "2. Distributed Banker's Algorithm: Extending the engine to manage resources across distributed cloud nodes using consensus protocols (e.g., Raft/Paxos).\n"
-        "3. Live Kernel Integration: Creating an experimental Linux loadable kernel module (LKM) applying Banker's checks to POSIX semaphore allocation."
+        "flawless state rollbacks whenever an allocation would compromise system integrity."
     )
+    add_p("Future Scope:")
+    add_bullet("Dynamic Process Registration:", "Allowing processes to dynamically join and depart without re-initializing matrix dimensions.")
+    add_bullet("Distributed Banker's Algorithm:", "Extending the engine to manage resources across distributed cloud nodes using consensus protocols (e.g., Raft/Paxos).")
+    add_bullet("Live Kernel Integration:", "Creating an experimental Linux loadable kernel module (LKM) applying Banker's checks to POSIX semaphore allocation.")
 
     # ---------------------------------------------------------
     # REFERENCES
     # ---------------------------------------------------------
-    add_chapter_title("REFERENCES")
+    add_chapter("REFERENCES")
     refs = [
         "[1] A. Silberschatz, P. B. Galvin, and G. Gagne, Operating System Concepts, 10th ed. Hoboken, NJ: John Wiley & Sons, 2018.",
         "[2] E. W. Dijkstra, \"Cooperatieve bank-overeenkomsten,\" Tech. Rep. EWD-108, Technische Hogeschool Eindhoven, Eindhoven, Netherlands, 1965.",
@@ -569,10 +651,14 @@ def create_report():
         "[6] W. Stallings, Operating Systems: Internals and Design Principles, 9th ed. Boston, MA: Pearson, 2018.",
     ]
     for r in refs:
-        p_ref = doc.add_paragraph(r)
+        p_ref = doc.add_paragraph()
+        p_ref.alignment = WD_ALIGN_PARAGRAPH.LEFT
+        p_ref.paragraph_format.left_indent = Inches(0.25)
         p_ref.paragraph_format.space_after = Pt(4)
+        p_ref.paragraph_format.line_spacing = 1.15
+        p_ref.add_run(r)
 
-    # Output directory
+    # Save outputs
     output_path = os.path.join(os.path.dirname(__file__), "OS_MiniProject_Report.docx")
     doc.save(output_path)
     print(f"Report successfully generated at: {output_path}")
