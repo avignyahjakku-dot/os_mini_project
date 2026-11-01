@@ -1,0 +1,18 @@
+{
+    "description": "Boundary Case: Single Resource Type (Original Dijkstra Banking Metaphor)",
+    "num_processes": 3,
+    "num_resources": 1,
+    "resource_names": ["Cash"],
+    "process_names": ["Client_A", "Client_B", "Client_C"],
+    "available": [2],
+    "max_matrix": [
+        [10],
+        [5],
+        [7]
+    ],
+    "allocation_matrix": [
+        [5],
+        [2],
+        [3]
+    ]
+}

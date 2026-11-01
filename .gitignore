@@ -1,0 +1,29 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C / C++ build outputs
+*.exe
+*.o
+*.obj
+*.out
+bankers_cpp
+bankers_c
+
+# Environments
+env/
+venv/
+ENV/
+.env
+
+# IDE and OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Test reports
+.pytest_cache/
+.coverage
+htmlcov/

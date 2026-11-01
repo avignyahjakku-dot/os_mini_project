@@ -1,0 +1,20 @@
+{
+    "description": "Unsafe Deadlock State Scenario - Circular Dependency Risk",
+    "num_processes": 4,
+    "num_resources": 3,
+    "resource_names": ["A", "B", "C"],
+    "process_names": ["P0", "P1", "P2", "P3"],
+    "available": [0, 0, 0],
+    "max_matrix": [
+        [3, 2, 2],
+        [2, 2, 2],
+        [4, 3, 3],
+        [2, 1, 1]
+    ],
+    "allocation_matrix": [
+        [2, 1, 1],
+        [1, 1, 1],
+        [2, 2, 1],
+        [1, 0, 1]
+    ]
+}

@@ -1,0 +1,20 @@
+{
+    "description": "Multiple Safe Execution Sequences Scenario",
+    "num_processes": 4,
+    "num_resources": 3,
+    "resource_names": ["A", "B", "C"],
+    "process_names": ["P0", "P1", "P2", "P3"],
+    "available": [4, 3, 3],
+    "max_matrix": [
+        [3, 2, 2],
+        [2, 2, 2],
+        [4, 3, 3],
+        [2, 1, 1]
+    ],
+    "allocation_matrix": [
+        [1, 0, 0],
+        [1, 1, 0],
+        [1, 1, 1],
+        [0, 0, 1]
+    ]
+}

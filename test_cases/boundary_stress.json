@@ -1,0 +1,32 @@
+{
+    "description": "Boundary Stress Scenario: 10 Processes and 4 Resource Types",
+    "num_processes": 10,
+    "num_resources": 4,
+    "resource_names": ["CPU", "Memory", "Disk", "Network"],
+    "process_names": ["P0", "P1", "P2", "P3", "P4", "P5", "P6", "P7", "P8", "P9"],
+    "available": [4, 5, 4, 3],
+    "max_matrix": [
+        [5, 4, 3, 2],
+        [4, 3, 2, 2],
+        [6, 5, 4, 3],
+        [3, 3, 2, 1],
+        [7, 6, 5, 4],
+        [4, 2, 2, 1],
+        [5, 3, 3, 2],
+        [3, 2, 1, 1],
+        [4, 4, 3, 2],
+        [2, 2, 1, 1]
+    ],
+    "allocation_matrix": [
+        [1, 1, 0, 0],
+        [1, 0, 1, 0],
+        [2, 1, 1, 1],
+        [0, 1, 0, 0],
+        [2, 2, 1, 1],
+        [1, 0, 0, 0],
+        [1, 1, 1, 0],
+        [1, 0, 0, 1],
+        [0, 1, 1, 0],
+        [1, 0, 0, 0]
+    ]
+}

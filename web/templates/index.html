@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banker's Algorithm Simulator | OS Mini Project</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- HEADER -->
+        <header class="app-header">
+            <div class="header-left">
+                <div class="logo-badge">OS-11</div>
+                <div>
+                    <h1>Banker's Algorithm Simulator</h1>
+                    <p class="subtitle">Deadlock Avoidance & Resource-Allocation Request Verification</p>
+                </div>
+            </div>
+            <div class="header-right">
+                <span id="system-status-badge" class="badge badge-neutral">Status: Ready</span>
+                <button id="btn-theme-toggle" class="btn btn-secondary btn-sm" title="Toggle Theme">Toggle Theme</button>
+            </div>
+        </header>
+
+        <!-- PRESET CONTROLS BAR -->
+        <section class="card preset-bar">
+            <div class="preset-label"><strong>Scenarios:</strong></div>
+            <div class="preset-buttons">
+                <button class="btn btn-preset active" data-preset="silberschatz">Silberschatz (Textbook)</button>
+                <button class="btn btn-preset" data-preset="unsafe">Unsafe / Deadlock Danger</button>
+                <button class="btn btn-preset" data-preset="multi">Multiple Safe Paths</button>
+                <button class="btn btn-preset" data-preset="single">Single Resource Boundary</button>
+                <button class="btn btn-preset" data-preset="stress">Stress Test (10 Procs)</button>
+            </div>
+        </section>
+
+        <!-- MAIN DASHBOARD GRID -->
+        <div class="dashboard-grid">
+            
+            <!-- LEFT COLUMN: STATE MATRIX & UTILIZATION -->
+            <div class="col-main">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>System Resource Allocation State</h2>
+                        <span id="matrix-meta" class="meta-tag">5 Processes &bull; 3 Resources</span>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="matrix-table" id="matrix-table">
+                            <thead>
+                                <tr>
+                                    <th rowspan="2">Process</th>
+                                    <th colspan="3" id="th-alloc">Allocation</th>
+                                    <th colspan="3" id="th-max">Max Claim</th>
+                                    <th colspan="3" id="th-need">Need (Max - Alloc)</th>
+                                    <th colspan="3" id="th-avail">Available</th>
+                                </tr>
+                                <tr id="resource-subheaders">
+                                    <!-- Dynamic Resource Columns (A, B, C...) -->
+                                </tr>
+                            </thead>
+                            <tbody id="matrix-tbody">
+                                <!-- Populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- SYSTEM RESOURCE TOTALS & UTILIZATION -->
+                    <div class="utilization-section">
+                        <h3>Resource Utilization & System Capacities</h3>
+                        <div id="utilization-bars" class="util-grid">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SIMULATION TRACE CONTAINER -->
+                <div class="card" id="trace-card">
+                    <div class="card-header">
+                        <h2>Safety Algorithm Step-by-Step Execution Trace</h2>
+                        <button id="btn-run-safety" class="btn btn-primary">
+                            Run Safety Algorithm
+                        </button>
+                    </div>
+
+                    <!-- SAFE SEQUENCE BANNER -->
+                    <div id="safe-seq-alert" class="alert hidden">
+                        <div class="alert-icon" id="alert-icon">✓</div>
+                        <div class="alert-content">
+                            <h4 id="alert-title">System is Safe</h4>
+                            <p id="alert-message">Safe Sequence: P1 &rarr; P3 &rarr; P0 &rarr; P2 &rarr; P4</p>
+                            <div id="all-seqs-container" class="all-seqs hidden">
+                                <strong>Alternative Safe Sequences:</strong>
+                                <div id="all-seqs-list" class="seq-chips"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- STEP BY STEP TABLE -->
+                    <div class="table-responsive">
+                        <table class="trace-table" id="trace-table">
+                            <thead>
+                                <tr>
+                                    <th>Step</th>
+                                    <th>Process</th>
+                                    <th>Work (Before)</th>
+                                    <th>Need</th>
+                                    <th>Allocation Reclaimed</th>
+                                    <th>Work (After)</th>
+                                    <th>Finish State</th>
+                                </tr>
+                            </thead>
+                            <tbody id="trace-tbody">
+                                <tr>
+                                    <td colspan="7" class="placeholder-text">Click "Run Safety Algorithm" to view step-by-step trace execution.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT COLUMN: REQUEST SIMULATOR & TOOLS -->
+            <div class="col-side">
+                
+                <!-- RESOURCE REQUEST SIMULATOR -->
+                <div class="card action-card">
+                    <div class="card-header">
+                        <h2>Simulate Resource Request</h2>
+                    </div>
+                    <p class="card-desc">Simulates process resource request with automated safety verification and rollback.</p>
+
+                    <form id="request-form">
+                        <div class="form-group">
+                            <label for="req-process-select">Requesting Process:</label>
+                            <select id="req-process-select" class="form-control">
+                                <!-- Populated dynamically -->
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Requested Quantities:</label>
+                            <div id="req-vector-inputs" class="vector-input-grid">
+                                <!-- Populated dynamically -->
+                            </div>
+                        </div>
+
+                        <div class="button-group">
+                            <button type="submit" class="btn btn-success btn-block" id="btn-submit-request">
+                                Submit Request
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- REQUEST OUTCOME BANNER -->
+                    <div id="request-result-banner" class="alert hidden">
+                        <div class="alert-content">
+                            <h4 id="request-result-title">Result</h4>
+                            <p id="request-result-body"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RESOURCE RELEASE -->
+                <div class="card action-card">
+                    <div class="card-header">
+                        <h2>Release Resources</h2>
+                    </div>
+                    <p class="card-desc">Release currently held allocated resources back to the Available pool.</p>
+
+                    <form id="release-form">
+                        <div class="form-group">
+                            <label for="rel-process-select">Releasing Process:</label>
+                            <select id="rel-process-select" class="form-control">
+                                <!-- Populated dynamically -->
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Release Quantities:</label>
+                            <div id="rel-vector-inputs" class="vector-input-grid">
+                                <!-- Populated dynamically -->
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-warning btn-block" id="btn-submit-release">
+                            Release Resources
+                        </button>
+                    </form>
+                </div>
+
+                <!-- ALGORITHMIC TIME COMPLEXITY CARD -->
+                <div class="card action-card">
+                    <div class="card-header">
+                        <h2>Algorithmic Benchmark</h2>
+                    </div>
+                    <p class="card-desc">Evaluates O(m &times; n&sup2;) polynomial complexity scaling under varied loads.</p>
+                    <button id="btn-run-benchmark" class="btn btn-secondary btn-block">Run Benchmark</button>
+                    
+                    <div id="benchmark-results" class="benchmark-container hidden">
+                        <table class="benchmark-table">
+                            <thead>
+                                <tr>
+                                    <th>Processes (n)</th>
+                                    <th>Runtime (ms)</th>
+                                    <th>Theoretical Ops</th>
+                                </tr>
+                            </thead>
+                            <tbody id="benchmark-tbody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- FOOTER -->
+        <footer class="app-footer">
+            <p><strong>Operating Systems Mini Project</strong> &bull; Topic 11: Banker's Algorithm for Deadlock Avoidance</p>
+            <p>Designed and Implemented for Undergraduate Computer Science and Engineering</p>
+        </footer>
+    </div>
+
+    <script src="/static/js/main.js"></script>
+</body>
+</html>
