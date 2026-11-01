@@ -85,8 +85,8 @@ def build_presentation():
     p2.space_after = Pt(30)
 
     p3 = tf1.add_paragraph()
-    p3.text = "Team Members: Avignya Reddy Jakku (25070721024) | Aapti Reddy Erragunta (25070721018) | Ahila Meghana (25070721002)"
-    p3.font.size = Pt(13)
+    p3.text = "Team Members: Avignya Reddy Jakku (25070721024) | Aapti Reddy Erragunta (25070721018) | Ahila Meghana (25070721002) | Krithika Reddy (25070721062)"
+    p3.font.size = Pt(12)
     p3.font.bold = True
     p3.font.color.rgb = TEXT_DARK
     p3.space_after = Pt(6)

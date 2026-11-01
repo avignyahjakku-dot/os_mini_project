@@ -158,7 +158,7 @@ def create_report():
     meta_rows = [
         ("Course Name:", "Operating Systems (CSE-301)"),
         ("Project Topic:", "Topic 11: Banker's Algorithm for Deadlock Avoidance"),
-        ("Team Members & PRN:", "1. Avignya Reddy Jakku (PRN: 25070721024)\n2. Aapti Reddy Erragunta (PRN: 25070721018)\n3. Ahila Meghana (PRN: 25070721002)"),
+        ("Team Members & PRN:", "1. Avignya Reddy Jakku (PRN: 25070721024)\n2. Aapti Reddy Erragunta (PRN: 25070721018)\n3. Ahila Meghana (PRN: 25070721002)\n4. Krithika Reddy (PRN: 25070721062)"),
         ("Faculty Guide:", "Prof. Bibhu Prasad Sahu (Faculty of Operating Systems)"),
         ("Head of Department:", "Dr. Suryanarayana (Head of Department of CSE)"),
     ]
@@ -206,9 +206,9 @@ def create_report():
     add_p(
         "This is to certify that the mini project entitled \"Banker's Algorithm for Deadlock Avoidance and "
         "Resource-Allocation Verification\" is a bona fide record of work carried out by Avignya Reddy Jakku "
-        "(PRN: 25070721024), Aapti Reddy Erragunta (PRN: 25070721018), and Ahila Meghana (PRN: 25070721002) "
-        "in partial fulfillment of the requirements for the award of the Degree of Bachelor of Technology "
-        "in Computer Science and Engineering during the academic session 2024–2025.",
+        "(PRN: 25070721024), Aapti Reddy Erragunta (PRN: 25070721018), Ahila Meghana (PRN: 25070721002), "
+        "and Krithika Reddy (PRN: 25070721062) in partial fulfillment of the requirements for the award of "
+        "the Degree of Bachelor of Technology in Computer Science and Engineering during the academic session 2024–2025.",
         space_after=40
     )
 
@@ -252,7 +252,8 @@ def create_report():
 
     add_p("Avignya Reddy Jakku (25070721024)", bold=True, space_after=2)
     add_p("Aapti Reddy Erragunta (25070721018)", bold=True, space_after=2)
-    add_p("Ahila Meghana (25070721002)", bold=True, space_after=18)
+    add_p("Ahila Meghana (25070721002)", bold=True, space_after=2)
+    add_p("Krithika Reddy (25070721062)", bold=True, space_after=18)
 
     doc.add_page_break()
 

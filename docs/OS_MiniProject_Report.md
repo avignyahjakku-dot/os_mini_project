@@ -8,6 +8,7 @@
 1. **Avignya Reddy Jakku** — PRN: `25070721024`
 2. **Aapti Reddy Erragunta** — PRN: `25070721018`
 3. **Ahila Meghana** — PRN: `25070721002`
+4. **Krithika Reddy** — PRN: `25070721062`
 
 **Faculty Guide:** Prof. Bibhu Prasad Sahu (Faculty of Operating Systems, Department of CSE)  
 **Head of Department:** Dr. Suryanarayana (Head of Department, Department of CSE)  
@@ -15,7 +16,7 @@
 ---
 
 ## CERTIFICATE OF APPROVAL
-This is to certify that the mini project entitled **"Banker's Algorithm for Deadlock Avoidance and Resource-Allocation Verification"** is a bona fide record of work carried out by **Avignya Reddy Jakku (PRN: 25070721024)**, **Aapti Reddy Erragunta (PRN: 25070721018)**, and **Ahila Meghana (PRN: 25070721002)** in partial fulfillment of the requirements for the award of the Degree of *Bachelor of Technology in Computer Science and Engineering* during the academic session 2024–2025.
+This is to certify that the mini project entitled **"Banker's Algorithm for Deadlock Avoidance and Resource-Allocation Verification"** is a bona fide record of work carried out by **Avignya Reddy Jakku (PRN: 25070721024)**, **Aapti Reddy Erragunta (PRN: 25070721018)**, **Ahila Meghana (PRN: 25070721002)**, and **Krithika Reddy (PRN: 25070721062)** in partial fulfillment of the requirements for the award of the Degree of *Bachelor of Technology in Computer Science and Engineering* during the academic session 2024–2025.
 
 ```
 _________________________                 _________________________
@@ -33,6 +34,7 @@ We hereby declare that the project work presented in this mini-project report is
 - Avignya Reddy Jakku (25070721024)
 - Aapti Reddy Erragunta (25070721018)
 - Ahila Meghana (25070721002)
+- Krithika Reddy (25070721062)
 
 ---
 
