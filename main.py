@@ -24,7 +24,7 @@ def main():
         epilog="""
 Examples:
   python main.py                        # Launch interactive terminal CLI
-  python main.py --web                  # Launch modern web dashboard at http://127.0.0.1:5000
+  python main.py --web                  # Launch modern web dashboard at http://127.0.0.1:5050
   python main.py --file test_cases/silberschatz_example.json
   python main.py --file test_cases/silberschatz_example.json --request "P1:1,0,2"
   python main.py --benchmark
@@ -46,8 +46,8 @@ Examples:
     parser.add_argument(
         "--port",
         type=int,
-        default=5000,
-        help="Port for Web Dashboard (default: 5000)",
+        default=5050,
+        help="Port for Web Dashboard (default: 5050)",
     )
     parser.add_argument(
         "--request",

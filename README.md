@@ -89,7 +89,7 @@ Start the local web server:
 ```bash
 python main.py --web
 ```
-Open your browser to: **`http://127.0.0.1:5000`**
+Open your browser to: **`http://127.0.0.1:5050`**
 
 **Web Features:**
 - Visual state matrix with automatic dimension adaptation.

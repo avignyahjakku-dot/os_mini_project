@@ -138,7 +138,7 @@ def get_benchmark():
         return jsonify({"success": False, "message": str(e)}), 500
 
 
-def run_server(port: int = 5000):
+def run_server(port: int = 5050):
     app.run(host="127.0.0.1", port=port, debug=False)
 
 
